@@ -14,6 +14,12 @@ class GetConfig():
     def db_type(self):
         return self.config_file.get('DB','type') 
 
+    def db_uname(self):
+        return self.config_file.get('DB','uname') 
+
+    def db_pwd(self):
+        return self.config_file.get('DB','pwd') 
+
     def db_name(self):
         return self.config_file.get('DB','name') 
 

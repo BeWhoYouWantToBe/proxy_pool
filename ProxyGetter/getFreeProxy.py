@@ -13,7 +13,7 @@ class GetFreeProxy():
 
     @staticmethod 
     @robustCrawl
-    def freeProxyFirst(page=10):
+    def freeproxyfirst(page=10):
         base_url = 'http://www.kuaidaili.com/proxylist/{page}'
         for i in range(page):
             url = base_url.format(page=i+1)
