@@ -18,17 +18,21 @@ class ProxyRefreshSchedule(ProxyManager):
         ProxyManager.__init__(self)
 
     def validProxy(self):
-        raw_proxy = self.db.pop('raw_proxy')
-        while raw_proxy:
-            proxies = {'http':'http://{}'.format(raw_proxy),
-                       'https':'https://{}'.format(raw_proxy)}
+        ip,port,protocol,location = self.db.pop('raw_proxy')
+        while ip:
+            proxies = {'http':'http://{}:{}'.format(ip,port),
+                       'https':'http://{}:{}'.format(ip,port)}
             try:
-                r = requests.get('http://www.icanhazip.com',proxies=proxies,timeout=5,verify=False)
-                if r.status_code == 200:
-                    self.db.put('useful_proxy',raw_proxy)
+                r = requests.get('https://www.icanhazip.com',proxies=proxies,timeout=20,verify=False)
+                if r.text.strip() == ip:
+                    self.db.put('useful_proxy',(ip,port,protocol,location))
+                    print(ip+' OK')
+
             except Exception as e:
-                pass 
-            raw_proxy = self.db.pop('raw_proxy')
+                print(ip+' ERROR')
+                print(e)
+
+            ip,port,protocol,location = self.db.pop('raw_proxy')
 
 def refreshPool():
     pp = ProxyRefreshSchedule() 
@@ -38,7 +42,7 @@ def main(process_num=50):
     p = ProxyRefreshSchedule() 
     p.refresh() 
 
-    pool = Pool(50) 
+    pool = Pool(process_num) 
     for i in range(process_num):
         pool.apply_async(refreshPool)
     pool.close() 
