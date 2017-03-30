@@ -65,12 +65,13 @@ class GetFreeProxy():
 
     @staticmethod
     @robustCrawl
-    def freeproxythird(page=1):
+    def freeproxythird(page=900):
         base_url = 'http://www.ip181.com/daili/{page}.html'
         for i in range(page):
             url = base_url.format(page=i+1)
             try:
                 r = requests.get(url,headers=headers)
+                time.sleep(1)
                 soup = BeautifulSoup(r.content.decode('gb2312'),'lxml') 
                 table = soup.find('table').contents[1]
 
@@ -79,8 +80,8 @@ class GetFreeProxy():
                 protocols = [i.contents[7].string for i in table.children if i != '\n'][1:]
                 locations = [i.contents[11].string for i in table.children if i != '\n'][1:]
 
-            except Exceptin as e:
-                print(e)
+            except Exception as e:
+#                print(e)
                 continue
 
             if len(ips) != len(ports) or len(ips) != len(protocols) or len(ips) != len(locations):
@@ -89,7 +90,7 @@ class GetFreeProxy():
             print('第{}页完成'.format(i+1))
 
             for i in range(len(ips)):
-                yield ips[i],ports[i],protocols[i],locations[i]
+                yield "('{}','{}','{}','{}',now())".format(ips[i],ports[i],protocols[i],locations[i])
 
 
 

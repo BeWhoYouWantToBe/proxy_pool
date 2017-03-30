@@ -14,8 +14,8 @@ class ProxyManager():
     def __init__(self):
         self.db = DbClient() 
         self.config = GetConfig() 
-        self.raw_proxy_queue = 'raw_proxy' 
-        self.useful_proxy_queue = 'useful_proxy_queue' 
+        self.raw_proxy_queue = 'raw_proxies' 
+        self.useful_proxy_queue = 'useful_proxies_queue' 
 
     def refresh(self):
         for proxyGetter in self.config.proxy_getter_functions():
@@ -24,16 +24,16 @@ class ProxyManager():
                 proxy_set.add(proxy) 
 
             for proxy in proxy_set:
-                self.db.put('raw_proxy',proxy) 
+                self.db.put('raw_proxies',proxy) 
 
     def get(self):
-        return self.db.pop('useful_proxy')
+        return self.db.get('useful_proxies')
 
     def delete(self,proxy):
-        self.db.delete('useful_proxy',proxy)
+        self.db.delete('useful_proxies',proxy)
 
     def getAll(self):
-        return self.db.getAll('useful_proxy')
+        return self.db.getAll('useful_proxies')
 
 if __name__ == '__main__':
     pp = ProxyManager() 

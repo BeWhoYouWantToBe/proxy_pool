@@ -18,21 +18,21 @@ class ProxyRefreshSchedule(ProxyManager):
         ProxyManager.__init__(self)
 
     def validProxy(self):
-        ip,port,protocol,location = self.db.pop('raw_proxy')
+        ip,port,protocol,location,t = self.db.pop('raw_proxies')
         while ip:
             proxies = {'http':'http://{}:{}'.format(ip,port),
                        'https':'http://{}:{}'.format(ip,port)}
             try:
                 r = requests.get('https://www.icanhazip.com',proxies=proxies,timeout=20,verify=False)
                 if r.text.strip() == ip:
-                    self.db.put('useful_proxy',(ip,port,protocol,location))
+                    self.db.put('useful_proxies',"('{}','{}','{}','{}','{}')".format(ip,port,protocol,location,t))
                     print(ip+' OK')
 
             except Exception as e:
+#                print(e)
                 print(ip+' ERROR')
-                print(e)
 
-            ip,port,protocol,location = self.db.pop('raw_proxy')
+            ip,port,protocol,location,t = self.db.pop('raw_proxies')
 
 def refreshPool():
     pp = ProxyRefreshSchedule() 

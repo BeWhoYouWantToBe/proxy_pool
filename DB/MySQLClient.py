@@ -16,8 +16,12 @@ class MySQLClient():
         return random.choice(data)
 
     def put(self,table,value):
-        self.cursor.execute('insert ignore into {} values{}'.format(table,value))
-        self.db.commit() 
+        try:
+            self.cursor.execute('insert ignore into {} values{}'.format(table,value))
+            self.db.commit() 
+        except Exception as e:
+            print(e)
+
 
     def delete(self,table,value):
         self.cursor.execute('delete from {} where ip="{}"'.format(table,value))
